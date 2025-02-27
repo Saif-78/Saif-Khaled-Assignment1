@@ -1,0 +1,138 @@
+class Courier:
+    """Represents a courier who delivers orders"""
+
+    def __init__(self, name, courier_id, vehicle, contact):
+        self._name = name  # Name of the courier
+        self._courier_id = courier_id  # Unique ID for the courier
+        self._assigned_orders = []  # List of orders assigned to the courier
+        self._vehicle = vehicle  # Vehicle details used for delivery
+        self._contact = contact  # Contact information of the courier
+
+    # Getter and Setter for name
+    def get_name(self):
+        return self._name
+
+    def set_name(self, name):
+        self._name = name
+
+    # Getter and Setter for courier_id
+    def get_courier_id(self):
+        return self._courier_id
+
+    def set_courier_id(self, courier_id):
+        self._courier_id = courier_id
+
+    def assignDelivery(self, order):
+        """Assigns an order to the courier"""
+        self._assigned_orders.append(order)
+
+    def updateStatus(self, order, status):
+        """Updates the status of the assigned order"""
+        order.set_status(status)
+
+
+class Recipient:
+    """Represents the recipient of the delivery"""
+
+    def __init__(self, name, contact, address, email, city):
+        self._name = name  # Name of the recipient
+        self._contact = contact  # Contact number of the recipient
+        self._address = address  # Delivery address
+        self._email = email  # Email of the recipient
+        self._city = city  # City where the package is delivered
+
+    # Getter and Setter for name
+    def get_name(self):
+        return self._name
+
+    def set_name(self, name):
+        self._name = name
+
+    def getRecipientDetails(self):
+        """Returns recipient details as a formatted string"""
+        return f"{self._name}, {self._contact}, {self._address}, {self._city}"
+
+    def updateAddress(self, new_address):
+        """Updates recipient's address"""
+        self._address = new_address
+
+
+class DeliveryOrder:
+    """Represents a delivery order"""
+
+    def __init__(self, order_number, items, recipient, weight, status="Pending"):
+        self._order_number = order_number  # Unique order number
+        self._items = items  # List of items in the order
+        self._recipient = recipient  # Recipient details
+        self._weight = weight  # Total weight of the package
+        self._status = status  # Current delivery status
+
+    # Getter and Setter for status
+    def get_status(self):
+        return self._status
+
+    def set_status(self, status):
+        self._status = status
+
+    def createOrder(self):
+        """Creates a new order in the system"""
+        pass
+
+    def updateDetails(self, new_details):
+        """Updates order details with new information"""
+        pass
+
+    def calculateTotal(self):
+        """Calculates the total price of all items in the order"""
+        return sum(item['price'] * item['quantity'] for item in self._items)
+
+
+class DeliveryNote:
+    """Represents a delivery note generated for an order"""
+
+    def __init__(self, order_info, charges, tax, date):
+        self._order_info = order_info  # Reference to the order
+        self._summary = self.generateSummary()  # Summary of delivered items
+        self._charges = charges  # Total charges before tax
+        self._tax = tax  # Tax amount
+        self._date = date  # Delivery date
+
+    def generateSummary(self):
+        """Generates a summary of the items in the order"""
+        summary = "\n".join(
+            [f"{item['code']} - {item['description']} (x{item['quantity']}) - AED {item['price'] * item['quantity']}"
+             for item in self._order_info._items]
+        )
+        return summary
+
+    def printNote(self):
+        """Prints the delivery note details"""
+        print("\nDELIVERY NOTE")
+        print(f"Order Number: {self._order_info._order_number}")
+        print(f"Recipient: {self._order_info._recipient.getRecipientDetails()}")
+        print(f"Delivery Status: {self._order_info.get_status()}")
+        print("Items:")
+        print(self._summary)
+        print(f"Total Charges: AED {self._charges + self._tax}\n")
+
+
+# Creating recipient object with details
+recipient = Recipient("Sarah Johnson", "sarah.johnson@example.com", "45 Knowledge Avenue, Dubai, UAE",
+                      "sarah.j@example.com", "Dubai")
+
+# List of items being delivered
+items = [
+    {"code": "ITM001", "description": "Wireless Keyboard", "quantity": 1, "price": 100.00},
+    {"code": "ITM002", "description": "Wireless Mouse & Pad Set", "quantity": 1, "price": 75.00},
+    {"code": "ITM003", "description": "Laptop Cooling Pad", "quantity": 1, "price": 120.00},
+    {"code": "ITM004", "description": "Camera Lock", "quantity": 3, "price": 15.00}
+]
+
+# Creating a delivery order object
+order = DeliveryOrder("DEL123456789", items, recipient, 7, "Delivered")
+
+# Creating a delivery note object based on the order
+delivery_note = DeliveryNote(order, 270.00, 13.50, "January 25, 2025")
+
+# Printing the delivery note
+delivery_note.printNote()
